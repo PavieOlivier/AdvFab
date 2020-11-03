@@ -7,6 +7,7 @@
 ///if i could get some credit, it would be nice :)
 ///if you have any question/issues , anything related to this packages, feel free to contact me ,
 library adv_fab;
+
 import 'package:flutter/material.dart';
 
 int _sharedIndex;
@@ -120,6 +121,9 @@ class AdvFab extends StatefulWidget {
 
   ///Defines the action to be performed once the floating Action Button is pressed
   final Function onFloatingActionButtonTapped;
+
+  ///Defines the action to be performed once the Back pannel is pressed
+  final Function onPannelTapped;
 
   ///The icon to display inside the floating action button
   final IconData floatingActionButtonIcon;
@@ -247,6 +251,9 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
             if (widget.controller.isCollapsed == true) {
               widget.onFloatingActionButtonTapped();
             } else {
+              if (widget.onPannelTapped != null) {
+                widget.onPannelTapped();
+              }
               if (widget.showLogs == true) {
                 print(
                     'AdvFab: cannot perform tapped action\nReason: When the FAB is expanded no action gets performed until it gets collapsed');
@@ -360,9 +367,9 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
                                             widget.floatingActionButtonIcon,
                                             color: widget
                                                 .floatingActionButtonIconColor,
-                                            size:
-                                                _SizeConfig.safeBlockHorizontal *
-                                                    10,
+                                            size: _SizeConfig
+                                                    .safeBlockHorizontal *
+                                                10,
                                           ),
                                         )
                                       : Center(
@@ -704,24 +711,21 @@ class __AdvFabNavigationBarIconBuilderState
   }
 }
 
-
-
 ///======= [The size config of the code]
 ///Another work in progress
 ///Originally adapted from the DevCam developper
-/// but i made some changes to make it feel my needs better 
+/// but i made some changes to make it feel my needs better
 class _SizeConfig {
   static MediaQueryData _mediaQueryData;
+
   ///this is the width of the screen
   static double screenWidth;
 
-
-  //for my internal use 
+  //for my internal use
   static double _safeAreaHorizontal;
 
   /// This is 1% of the screen on the horizontal by considering the safe Area
   static double safeBlockHorizontal;
-
 
   ///Use this Only once inside the build method, preferably on the 1st screen and never call it again during the life time of your app
   static void init(BuildContext context) {
@@ -730,6 +734,5 @@ class _SizeConfig {
     _safeAreaHorizontal =
         _mediaQueryData.padding.left + _mediaQueryData.padding.right;
     safeBlockHorizontal = (screenWidth - _safeAreaHorizontal) / 100;
-  
   }
 }
