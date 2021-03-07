@@ -7,29 +7,30 @@
 ///if i could get some credit, it would be nice :)
 ///if you have any question/issues , anything related to this packages, feel free to contact me ,
 library adv_fab;
+
 import 'package:flutter/material.dart';
 
-int _sharedIndex;
+int? _sharedIndex;
 
 class AdvFabController {
   ///Will return true if the AdvFab is collapsed and false otherwise
   bool isCollapsed = true;
 
   ///Use this to expand The floating action button
-  Function expandFAB;
+  Function? expandFAB;
 
   ///Use this to collapse the floating action button
-  Function collapseFAB;
+  Function? collapseFAB;
 
   //Use this to swichTab if you are using the
   //floating action button as a bottom navigation bar
-  Function _switchTab;
+  late Function _switchTab;
 
-  double _heightToExpandTo;
-  Widget _expandedWidget;
-  MainAxisAlignment _expendedContainerMainAxisAlignment;
-  CrossAxisAlignment _expendedContainerCrossAxisAlignment;
-  Color _expendedColor;
+  late double _heightToExpandTo;
+  Widget? _expandedWidget;
+  MainAxisAlignment? _expendedContainerMainAxisAlignment;
+  CrossAxisAlignment? _expendedContainerCrossAxisAlignment;
+  Color? _expendedColor;
 
   ///Use this to set the widget that will appear one the AdvFab is expended.
   ///If a widget was previously set, the previous/old widget will get overridden
@@ -47,9 +48,9 @@ class AdvFabController {
           MainAxisAlignment.start,
       CrossAxisAlignment expendedContainerCrossAxisAlignment =
           CrossAxisAlignment.center,
-      Color expendedBackgroundColor,
-      @required Widget withChild,
-      @required double heightToExpandTo,
+      Color? expendedBackgroundColor,
+      required Widget withChild,
+      required double heightToExpandTo,
       bool showLogs = false,
       bool forceCustomHeight = false}) {
     //set the maain and cross axis alignment
@@ -108,7 +109,7 @@ class AdvFab extends StatefulWidget {
 
   //for the Space Bar
   ///The widget to display inside the space bar
-  final Widget spaceBarWidget;
+  final Widget? spaceBarWidget;
 
   ///The width the spacebar will occupy on the screen ( in percentage )
   final double floatingSpaceBarContainerWidth;
@@ -119,7 +120,7 @@ class AdvFab extends StatefulWidget {
   final double floatingActionButtonExpendedWidth;
 
   ///Defines the action to be performed once the floating Action Button is pressed
-  final Function onFloatingActionButtonTapped;
+  final Function? onFloatingActionButtonTapped;
 
   ///The icon to display inside the floating action button
   final IconData floatingActionButtonIcon;
@@ -134,7 +135,7 @@ class AdvFab extends StatefulWidget {
   final Color navigationBarIconInactiveColor;
 
   ///Use this to set the icons of the navigation bar
-  final List<AdvFabNavigationBarIcon> navigationBarIcons;
+  final List<AdvFabNavigationBarIcon>? navigationBarIcons;
 
   ///The duration of the expanding animation in milliseconds
   final Duration animationDuration;
@@ -154,7 +155,7 @@ class AdvFab extends StatefulWidget {
   final Curve collapsingAnimationCurve;
 
   /// The controller of the class
-  final AdvFabController controller;
+  final AdvFabController? controller;
 
   /// use elevation only for floating action button
   final bool useElevation;
@@ -163,7 +164,7 @@ class AdvFab extends StatefulWidget {
   /// warnings and errors will always be printed
   final bool showLogs;
   const AdvFab({
-    Key key,
+    Key? key,
     this.tweenColorAnimationDuration = const Duration(milliseconds: 250),
     this.collapsingAnimationCurve = Curves.fastLinearToSlowEaseIn,
     this.expandingAnimationCurve = Curves.fastLinearToSlowEaseIn,
@@ -190,12 +191,12 @@ class AdvFab extends StatefulWidget {
 }
 
 class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
-  AnimationController tweenAnimationConroller;
-  int selectedIconIndex;
-  Animation<Color> animatedColor;
-  ColorTween colorTween;
+  late AnimationController tweenAnimationConroller;
+  int? selectedIconIndex;
+  late Animation<Color?> animatedColor;
+  ColorTween? colorTween;
   List<Widget> iconConstructor = [];
-  Widget expandedWidget;
+  Widget? expandedWidget;
   bool isExpanding = false, isExpanded = false;
   double expandedChildOpacityValue = 0, expandedIconOpacity = 1;
   @override
@@ -207,16 +208,16 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
         vsync: this, duration: widget.tweenColorAnimationDuration);
     colorTween = ColorTween(
         begin: widget.collapsedColor,
-        end: widget.controller._expendedColor ?? widget.collapsedColor);
-    animatedColor = colorTween.animate(tweenAnimationConroller)
+        end: widget.controller!._expendedColor ?? widget.collapsedColor);
+    animatedColor = colorTween!.animate(tweenAnimationConroller)
       ..addListener(() {
         setState(() {});
       });
     if (widget.useAsNavigationBar == true) {}
     if (widget.controller != null) {
-      widget.controller._expendedColor = widget.collapsedColor;
-      widget.controller.expandFAB = expandFAB;
-      widget.controller.collapseFAB = closeFAB;
+      widget.controller!._expendedColor = widget.collapsedColor;
+      widget.controller!.expandFAB = expandFAB;
+      widget.controller!.collapseFAB = closeFAB;
     }
     verifyRequestedSetting();
   }
@@ -231,7 +232,7 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     _SizeConfig.init(context);
     if (widget.controller != null &&
-        widget.controller._expandedWidget == null) {}
+        widget.controller!._expandedWidget == null) {}
     return GestureDetector(
       onTap: () {
         if (widget.useAsFloatingActionButton == true) {
@@ -244,8 +245,8 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
               print(
                   'AdvFab: calling the method "onFloatingActionButtonTapped"');
             }
-            if (widget.controller.isCollapsed == true) {
-              widget.onFloatingActionButtonTapped();
+            if (widget.controller!.isCollapsed == true) {
+              widget.onFloatingActionButtonTapped!();
             } else {
               if (widget.showLogs == true) {
                 print(
@@ -261,7 +262,7 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
               ? EdgeInsets.only(left: 9, right: 9)
               : EdgeInsets.all(0),
           child: AnimatedContainer(
-            curve: widget.controller.isCollapsed
+            curve: widget.controller!.isCollapsed
                 ? widget.expandingAnimationCurve
                 : widget.collapsingAnimationCurve,
             duration: widget.animationDuration,
@@ -285,7 +286,7 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
                                 widget.floatingSpaceBarContainerWidth,
             height: isExpanding
                 ? (MediaQuery.of(context).size.height / 100) *
-                    widget.controller._heightToExpandTo
+                    widget.controller!._heightToExpandTo
                 : (MediaQuery.of(context).size.height / 100) * 7.5,
             decoration: BoxDecoration(
                 color: animatedColor.value,
@@ -307,10 +308,10 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 mainAxisAlignment: isExpanded
-                    ? widget.controller._expendedContainerMainAxisAlignment
+                    ? widget.controller!._expendedContainerMainAxisAlignment!
                     : MainAxisAlignment.center,
                 crossAxisAlignment: isExpanded
-                    ? widget.controller._expendedContainerCrossAxisAlignment
+                    ? widget.controller!._expendedContainerCrossAxisAlignment!
                     : CrossAxisAlignment.center,
                 children: <Widget>[
                   // 1st the Icons :)
@@ -327,18 +328,16 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
                                       for (var i = 0; i < 4; i++)
                                         new _AdvFabNavigationBarIconBuilder(
                                           isSelected: selectedIconIndex == i,
-                                          icon:
-                                              widget.navigationBarIcons[i].icon,
+                                          icon: widget
+                                              .navigationBarIcons![i].icon,
                                           title: widget
-                                              .navigationBarIcons[i].title,
+                                              .navigationBarIcons![i].title,
                                           selectedColor: widget
-                                                  .navigationBarIconActiveColor ??
-                                              Colors.green,
+                                              .navigationBarIconActiveColor,
                                           unselectedColor: widget
-                                                  .navigationBarIconInactiveColor ??
-                                              Colors.grey,
+                                              .navigationBarIconInactiveColor,
                                           onTap: () {
-                                            widget.navigationBarIcons[i]
+                                            widget.navigationBarIcons![i]
                                                 .onTap();
 
                                             if (widget.showLogs == true) {
@@ -348,7 +347,7 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
                                                       ' tapped');
                                             }
                                             onNavigatorIconTapped(i);
-                                            widget.controller._switchTab();
+                                            widget.controller!._switchTab();
                                           },
                                         )
                                     ])
@@ -360,9 +359,9 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
                                             widget.floatingActionButtonIcon,
                                             color: widget
                                                 .floatingActionButtonIconColor,
-                                            size:
-                                                _SizeConfig.safeBlockHorizontal *
-                                                    10,
+                                            size: _SizeConfig
+                                                    .safeBlockHorizontal *
+                                                10,
                                           ),
                                         )
                                       : Center(
@@ -378,7 +377,7 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
                       ? AnimatedOpacity(
                           opacity: expandedChildOpacityValue,
                           duration: Duration(milliseconds: 230),
-                          child: widget.controller._expandedWidget,
+                          child: widget.controller!._expandedWidget,
                         )
                       : SizedBox(),
                 ],
@@ -394,8 +393,8 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
     if (widget.showLogs == true) {
       print('AdvFab: Checking initial expanded widget configuration ');
     }
-    if (widget.controller._expendedContainerCrossAxisAlignment == null ||
-        widget.controller._expendedContainerMainAxisAlignment == null) {
+    if (widget.controller!._expendedContainerCrossAxisAlignment == null ||
+        widget.controller!._expendedContainerMainAxisAlignment == null) {
       print('\n==[WRONG CONFIGURATION ERROR]==\n"setExpandedWidgetConfiguration" of "AdvFabController"has to be called at least once during the lifetime of your application' +
           '\n==[Indication]==\nCall AdvFabController.setExpandedWidgetConfiguration(<<configure widget here>>) to tell the AdvFab wich widget shall be displayed once it is expanded\n' +
           'Then call the method "expandFAB" again');
@@ -422,7 +421,7 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
           setState(() {
             expandedChildOpacityValue = 1;
           });
-          widget.controller.isCollapsed = false;
+          widget.controller!.isCollapsed = false;
         });
         if (mounted) {
           setState(() {});
@@ -452,7 +451,7 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
             setState(() {
               expandedChildOpacityValue = 0;
               expandedIconOpacity = 1;
-              widget.controller.isCollapsed = true;
+              widget.controller!.isCollapsed = true;
             });
           });
         });
@@ -464,11 +463,11 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
   }
 
   // to animate the color transition
-  Future<ColorTween> changeTweenColor() async {
+  Future<ColorTween?> changeTweenColor() async {
     colorTween = ColorTween(
         begin: widget.collapsedColor,
-        end: widget.controller._expendedColor ?? widget.collapsedColor);
-    animatedColor = colorTween.animate(tweenAnimationConroller)
+        end: widget.controller!._expendedColor ?? widget.collapsedColor);
+    animatedColor = colorTween!.animate(tweenAnimationConroller)
       ..addListener(() {
         setState(() {});
       });
@@ -533,11 +532,6 @@ class _AdvFabState extends State<AdvFab> with SingleTickerProviderStateMixin {
         print('\n==[WRONG CONFIGURATION ERROR]==\nThe parameter "onFloatingActionButtonTapped" was not defined by you; please initialize it on the constructor' +
             '\n==[Indication]==\nWhen the parameter "useAsFloatingActionButton " is set to true, "onFloatingActionButtonTapped " must be defined and not be null');
       }
-      if (widget.floatingActionButtonIcon == null) {
-        // you wanna use a floating action button but there is Icon on it
-        print('\n==[WRONG CONFIGURATION ERROR]==\nThe parameter "floatingActionButtonIcon" was not defined by you; please initialize it on the constructor' +
-            '\n==[Indication]==\nWhen the parameter "useAsFloatingActionButton " is set to true, "floatingActionButtonIcon" must be defined and not be null');
-      }
     }
     if (widget.useAsNavigationBar == true) {
       if (widget.navigationBarIcons == null) {
@@ -569,10 +563,10 @@ class AdvFabBottomBarBody extends StatefulWidget {
   final AdvFabController controller;
 
   const AdvFabBottomBarBody(
-      {Key key,
-      @required this.screens,
+      {Key? key,
+      required this.screens,
       this.initialIndex = 0,
-      @required this.controller})
+      required this.controller})
       : super(key: key);
 
   @override
@@ -584,13 +578,7 @@ class _AdvFabBottomBarBodyState extends State<AdvFabBottomBarBody> {
   void initState() {
     super.initState();
     _sharedIndex = widget.initialIndex;
-    if (widget.controller != null) {
-      widget.controller._switchTab = rebuild;
-    } else {
-      throw () {
-        print('AdvFab: Error, a controller must be provided');
-      };
-    }
+    widget.controller._switchTab = rebuild;
   }
 
   void rebuild() {
@@ -602,7 +590,7 @@ class _AdvFabBottomBarBodyState extends State<AdvFabBottomBarBody> {
   @override
   Widget build(BuildContext context) {
     return PageStorage(
-        child: widget.screens[_sharedIndex], bucket: PageStorageBucket());
+        child: widget.screens[_sharedIndex!], bucket: PageStorageBucket());
   }
 }
 
@@ -617,10 +605,10 @@ class AdvFabNavigationBarIcon extends StatefulWidget {
   /// example: you can play a song
   final Function onTap;
   const AdvFabNavigationBarIcon({
-    Key key,
-    @required this.onTap,
-    @required this.title,
-    @required this.icon,
+    Key? key,
+    required this.onTap,
+    required this.title,
+    required this.icon,
   });
   @override
   _AdvFabNavigationBarIconState createState() =>
@@ -641,16 +629,16 @@ class _AdvFabNavigationBarIconState extends State<AdvFabNavigationBarIcon> {
 
 ///This is private, it is the icon Builder
 class _AdvFabNavigationBarIconBuilder extends StatefulWidget {
-  final bool isSelected;
-  final int index;
-  final IconData icon;
-  final String title;
-  final Function onTap;
-  final Color selectedColor;
-  final Color unselectedColor;
+  final bool? isSelected;
+  final int? index;
+  final IconData? icon;
+  final String? title;
+  final Function? onTap;
+  final Color? selectedColor;
+  final Color? unselectedColor;
 
   const _AdvFabNavigationBarIconBuilder(
-      {Key key,
+      {Key? key,
       this.isSelected,
       this.icon,
       this.title,
@@ -666,12 +654,12 @@ class _AdvFabNavigationBarIconBuilder extends StatefulWidget {
 
 class __AdvFabNavigationBarIconBuilderState
     extends State<_AdvFabNavigationBarIconBuilder> {
-  bool isSelected;
+  bool? isSelected;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        widget.onTap();
+        widget.onTap!();
         // if (widget.AdvFabController.selectedNavigationBarIndex == widget.index)
         // {
         //   print('We are progressing');
@@ -685,14 +673,14 @@ class __AdvFabNavigationBarIconBuilderState
           children: <Widget>[
             Icon(
               widget.icon,
-              color: widget.isSelected
+              color: widget.isSelected!
                   ? widget.selectedColor
                   : widget.unselectedColor,
             ),
             Text(
-              widget.title,
+              widget.title!,
               style: TextStyle(
-                color: widget.isSelected
+                color: widget.isSelected!
                     ? widget.selectedColor
                     : widget.unselectedColor,
               ),
@@ -704,24 +692,21 @@ class __AdvFabNavigationBarIconBuilderState
   }
 }
 
-
-
 ///======= [The size config of the code]
 ///Another work in progress
 ///Originally adapted from the DevCam developper
-/// but i made some changes to make it feel my needs better 
+/// but i made some changes to make it feel my needs better
 class _SizeConfig {
-  static MediaQueryData _mediaQueryData;
+  static late MediaQueryData _mediaQueryData;
+
   ///this is the width of the screen
-  static double screenWidth;
+  static late double screenWidth;
 
-
-  //for my internal use 
-  static double _safeAreaHorizontal;
+  //for my internal use
+  static late double _safeAreaHorizontal;
 
   /// This is 1% of the screen on the horizontal by considering the safe Area
-  static double safeBlockHorizontal;
-
+  static late double safeBlockHorizontal;
 
   ///Use this Only once inside the build method, preferably on the 1st screen and never call it again during the life time of your app
   static void init(BuildContext context) {
@@ -730,6 +715,5 @@ class _SizeConfig {
     _safeAreaHorizontal =
         _mediaQueryData.padding.left + _mediaQueryData.padding.right;
     safeBlockHorizontal = (screenWidth - _safeAreaHorizontal) / 100;
-  
   }
 }
